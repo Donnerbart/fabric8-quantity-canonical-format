@@ -400,6 +400,12 @@ public class Quantity implements Serializable, Comparable<Quantity> {
   private static final Quantity MINIMUM_EXPONENTIAL = new Quantity("1e-3");
   private static final Quantity MINIMUM_DECIMAL = new Quantity("1m");
 
+  private enum FormatType {
+    DecimalExponent, // e.g., 12e6
+    DecimalSI, // e.g., 12M  (12 * 10^6)
+    BinarySI // e.g., 12Mi (12 * 2^20)
+  }
+
   @JsonIgnore
   public Quantity getCanonicalFormat(Quantity expected) {
     System.out.println(this + " -> " + expected);
@@ -422,9 +428,33 @@ public class Quantity implements Serializable, Comparable<Quantity> {
       return ZERO;
     }
 
+    FormatType formatType = FormatType.DecimalExponent;
+    boolean isExponential = EXPONENTIAL_FORMAT.matcher(format).matches();
+    boolean isBinary = format.length() == 2 && format.endsWith("i");
+    if (!isExponential && !isBinary) {
+      formatType = FormatType.DecimalSI;
+    } else if (isBinary) {
+      formatType = FormatType.BinarySI;
+      if (canonicalAmount.compareTo(new BigDecimal(-1024)) > 0 && canonicalAmount.compareTo(new BigDecimal(1024)) < 0) {
+        // This avoids rounding and hopefully confusion, too
+        formatType = FormatType.DecimalSI;
+      } else {
+        // Don't lose precision-- show as DecimalSI
+        if (canonicalAmount.setScale(0, RoundingMode.HALF_UP).compareTo(canonicalAmount) != 0) {
+          formatType = FormatType.DecimalSI;
+        }
+      }
+    }
+    System.out.println("format type: " + formatType);
+
+    switch (formatType) {
+      case DecimalExponent:
+      case DecimalSI:
+      default:
+    }
+
     // round up to minimum value
     if (canonicalAmount.compareTo(BigDecimal.ONE) < 0) {
-      boolean isExponential = EXPONENTIAL_FORMAT.matcher(format).matches();
       if (isExponential) {
         return MINIMUM_EXPONENTIAL;
       }
