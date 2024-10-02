@@ -394,6 +394,8 @@ public class Quantity implements Serializable, Comparable<Quantity> {
     return fromNumericalAmount(numericalAmount, format);
   }
 
+  private static final Quantity ZERO = new Quantity("0");
+
   @JsonIgnore
   public Quantity getCanonicalFormat(Quantity expected) {
     System.out.println(this + " -> " + expected);
@@ -410,6 +412,11 @@ public class Quantity implements Serializable, Comparable<Quantity> {
     System.out.println("initial format: " + format);
     System.out.println("initial scale: " + canonicalAmount.scale());
     System.out.println("initial precision: " + canonicalAmount.precision());
+
+    // ensure that the canonical value is 0 and not 0<suffix> or rounded up
+    if (canonicalAmount.signum() == 0) {
+      return ZERO;
+    }
 
     return this;
   }
