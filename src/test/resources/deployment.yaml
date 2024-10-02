@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tiny-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tiny-app
+  template:
+    metadata:
+      labels:
+        app: tiny-app
+    spec:
+      containers:
+        - name: busybox
+          image: busybox
+          command: ["sleep", "3600"]
+          resources:
+            limits:
+              cpu:               "2.0000000000000"
+              ephemeral-storage: "1.001m"
+              memory:            "1.0001m"
