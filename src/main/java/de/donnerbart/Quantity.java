@@ -395,7 +395,22 @@ public class Quantity implements Serializable, Comparable<Quantity> {
   }
 
   @JsonIgnore
-  public Quantity getCanonicalFormat() {
+  public Quantity getCanonicalFormat(Quantity expected) {
+    System.out.println(this + " -> " + expected);
+    System.out.println("-------------------------------");
+    final var expectedNumericalAmount = expected.getNumericalAmount();
+    System.out.println("expected amount: " + expectedNumericalAmount);
+    System.out.println("expected format: " + expected.getFormat());
+    System.out.println("expected scale: " + expectedNumericalAmount.scale());
+    System.out.println("expected precision: " + expectedNumericalAmount.precision());
+
+    BigDecimal canonicalAmount = getNumericalAmount();
+    System.out.println("-------------------------------");
+    System.out.println("initial amount: " + canonicalAmount);
+    System.out.println("initial format: " + format);
+    System.out.println("initial scale: " + canonicalAmount.scale());
+    System.out.println("initial precision: " + canonicalAmount.precision());
+
     return this;
   }
 }

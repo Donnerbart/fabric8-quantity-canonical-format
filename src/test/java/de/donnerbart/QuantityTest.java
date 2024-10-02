@@ -274,7 +274,7 @@ class QuantityTest {
 
     private static void assertCanonicalFormat(final String quantity, final String expectedCanonical) {
         final Quantity expected = new Quantity(expectedCanonical);
-        final Quantity actual = new Quantity(quantity).getCanonicalFormat();
+        final Quantity actual = new Quantity(quantity).getCanonicalFormat(expected);
         assertThat(actual) //
                 .as("%s -> %s (equality)", quantity, expectedCanonical) //
                 .isEqualTo(expected);
