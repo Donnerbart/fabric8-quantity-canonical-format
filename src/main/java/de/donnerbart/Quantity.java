@@ -11,7 +11,6 @@ import java.math.RoundingMode;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiFunction;
-import java.util.regex.Pattern;
 
 /**
  * Quantity is fixed point representation of a number.
@@ -393,5 +392,10 @@ public class Quantity implements Serializable, Comparable<Quantity> {
       format = y.format;
     }
     return fromNumericalAmount(numericalAmount, format);
+  }
+
+  @JsonIgnore
+  public Quantity getCanonicalFormat() {
+    return this;
   }
 }
