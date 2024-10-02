@@ -11,6 +11,7 @@ import java.math.RoundingMode;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiFunction;
+import java.util.regex.Pattern;
 
 /**
  * Quantity is fixed point representation of a number.
@@ -395,6 +396,9 @@ public class Quantity implements Serializable, Comparable<Quantity> {
   }
 
   private static final Quantity ZERO = new Quantity("0");
+  private static final Pattern EXPONENTIAL_FORMAT = Pattern.compile("[eE]-*[0-9]+");
+  private static final Quantity MINIMUM_EXPONENTIAL = new Quantity("1e-3");
+  private static final Quantity MINIMUM_DECIMAL = new Quantity("1m");
 
   @JsonIgnore
   public Quantity getCanonicalFormat(Quantity expected) {
@@ -418,6 +422,14 @@ public class Quantity implements Serializable, Comparable<Quantity> {
       return ZERO;
     }
 
+    // round up to minimum value
+    if (canonicalAmount.compareTo(BigDecimal.ONE) < 0) {
+      boolean isExponential = EXPONENTIAL_FORMAT.matcher(format).matches();
+      if (isExponential) {
+        return MINIMUM_EXPONENTIAL;
+      }
+      return MINIMUM_DECIMAL;
+    }
     return this;
   }
 }
