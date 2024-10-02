@@ -184,6 +184,8 @@ class QuantityTest {
             "1.5G,1500M",
 
             // binary unit "Ki"
+            "0.00000001Ki,1m",
+            "0.0000001Ki,1m",
             "0.000001Ki,2m",
             "0.000004Ki,5m",
             "0.00001Ki,11m",

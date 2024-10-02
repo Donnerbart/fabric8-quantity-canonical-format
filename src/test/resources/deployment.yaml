@@ -19,5 +19,5 @@ spec:
           resources:
             limits:
               cpu:               "2.0000000000000"
-              ephemeral-storage: "1.001m"
-              memory:            "1.0001m"
+              ephemeral-storage: "0.0000001Ki"
+              memory:            "0.000001Ki"
